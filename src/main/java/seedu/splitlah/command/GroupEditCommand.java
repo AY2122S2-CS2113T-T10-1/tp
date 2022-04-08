@@ -24,13 +24,6 @@ public class GroupEditCommand extends Command {
     private final String[] involvedList;
     private final int groupId;
 
-    public boolean containNewPerson(PersonList newList, ArrayList<Person> oldList) {
-        if (newList.getSize() == oldList.size()) {
-            return false;
-        }
-        return true;
-    }
-
     /**
      * Initializes a GroupEditCommand object.
      *
@@ -43,6 +36,20 @@ public class GroupEditCommand extends Command {
         this.involvedList = involvedList;
         this.groupName = groupName;
         this.groupId = groupId;
+    }
+
+    /**
+     * Checks if new person list contains any new names.
+     *
+     * @param newList A PersonList object that represents the new person list.
+     * @param oldList An ArrayList object of Person that represents the old person list.
+     * @return True if new person list contains any new names, false otherwise.
+     */
+    public boolean containNewPerson(PersonList newList, ArrayList<Person> oldList) {
+        if (newList.getSize() == oldList.size()) {
+            return false;
+        }
+        return true;
     }
 
     /**
