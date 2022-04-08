@@ -3,10 +3,12 @@ package seedu.splitlah.command;
 import seedu.splitlah.data.Manager;
 import seedu.splitlah.data.PersonList;
 import seedu.splitlah.data.Group;
+import seedu.splitlah.data.Person;
 import seedu.splitlah.exceptions.InvalidDataException;
 import seedu.splitlah.ui.Message;
 import seedu.splitlah.ui.TextUI;
 
+import java.util.ArrayList;
 import java.util.logging.Level;
 
 /**
@@ -21,6 +23,13 @@ public class GroupEditCommand extends Command {
     private final String groupName;
     private final String[] involvedList;
     private final int groupId;
+
+    public boolean containNewPerson(PersonList newList, ArrayList<Person> oldList) {
+        if (newList.getSize() == oldList.size()) {
+            return false;
+        }
+        return true;
+    }
 
     /**
      * Initializes a GroupEditCommand object.
@@ -60,9 +69,24 @@ public class GroupEditCommand extends Command {
                 Manager.getLogger().log(Level.FINEST, Message.LOGGER_PERSONLIST_NAME_DUPLICATE_EXISTS_IN_EDITGROUP);
                 return;
             }
-            PersonList newPersonList = new PersonList(involvedList);
-            group.setPersonList(newPersonList);
+            boolean containAllPersonsFromOldList = false;
+            ArrayList<Person> oldList = group.getPersonList();
+            PersonList newList = new PersonList(involvedList);
+            if (newList.isSuperset(oldList)) {
+                containAllPersonsFromOldList = true;
+            }
+            if (!containAllPersonsFromOldList) {
+                ui.printlnMessage(Message.ERROR_GROUPEDIT_NEWLIST_NOT_CONTAIN_ALL_NAMES_FROM_OLDLIST);
+                return;
+            } else if (!containNewPerson(newList, oldList)) {
+                ui.printlnMessage(Message.ERROR_GROUPEDIT_NO_NEW_NAMES);
+                return;
+            } else {
+                PersonList newPersonList = new PersonList(involvedList);
+                group.setPersonList(newPersonList);
+            }
         }
+
         if (groupName != null) {
             group.setGroupName(groupName);
         }
