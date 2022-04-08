@@ -95,7 +95,12 @@ public class GroupEditCommand extends Command {
         }
 
         if (groupName != null) {
-            group.setGroupName(groupName);
+            if (!groupName.equals(group.getGroupName())) {
+                group.setGroupName(groupName);
+            } else {
+                ui.printlnMessage(Message.ERROR_GROUPEDIT_GROUP_NAME_NOT_NEW);
+                return;
+            }
         }
         manager.saveProfile();
         ui.printlnMessageWithDivider(COMMAND_SUCCESS + "\n" + group);
